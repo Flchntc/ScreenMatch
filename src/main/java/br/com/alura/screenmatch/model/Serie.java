@@ -2,18 +2,32 @@ package br.com.alura.screenmatch.model;
 
 import br.com.alura.screenmatch.service.ConsultaChatGPT;
 import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.OptionalDouble;
+import br.com.alura.screenmatch.model.*;
 
-public class Serie {
-    String title;
+@Entity
+@Table(name = "series")
+public class Serie{
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
+    private String title;
     private Integer totalSeasons;
     private Double rating;
+    @Enumerated(EnumType.STRING)
     private Categoria genero;
     private String atores;
     private String sinopse;
     private String poster;
+    @Transient
+    private List<Episodio> episodios = new ArrayList<>();
 
+    public Serie() {}
     public Serie(DadosSerie dadosSerie){
         this.title = dadosSerie.title();
         this.totalSeasons = dadosSerie.totalSeasons();
@@ -22,6 +36,15 @@ public class Serie {
         this.atores = dadosSerie.atores();
         this.poster = dadosSerie.poster();
         this.sinopse = ConsultaChatGPT.obterTraducao(dadosSerie.sinopse()).trim();
+    }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -90,5 +113,13 @@ public class Serie {
                 ", atores='" + atores + '\'' +
                 ", sinopse='" + sinopse + '\'' +
                 ", poster='" + poster + '\'' ;
+    }
+
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        this.episodios = episodios;
     }
 }
