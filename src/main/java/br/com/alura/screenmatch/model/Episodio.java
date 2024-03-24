@@ -4,14 +4,23 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
     private String title;
     private Integer epNum;
     private Double rating;
     private LocalDate releaseDate;
+    @ManyToOne
+    private Serie serie;
 
+    public Episodio(){}
     public Episodio(Integer seasonNum, DadosEpisodios dadosEpisodios) {
         this.temporada = seasonNum;
         this.title = dadosEpisodios.title();
@@ -27,6 +36,22 @@ public class Episodio {
             this.releaseDate = null;
         }
         
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     public Integer getEpNum() {
